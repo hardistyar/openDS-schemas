@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://nsidr.org/schemas/opendsschema.json",
+  "description": "JSON schema for an open Digital Specimen, version 0.1",
+  "type": "object",
+  "title": "OpenDigitalSpecimen",
+  "required": [
+   "id",
+   "midsLevel",
+   "modified",
+   "physicalSpecimenId",
+   "institution"
+  ],
+  "properties": {
+    "id": {
+      "type": "string", "$comment": "doi name"
+    },
+
+    "a_section": {
+      "$id": "#/properties/a_section",
+      "title": "Authoritative information section",
+        "physicalSpecimenId": {
+        "type": "string",
+        "title": "Physical specimen identifier" },
+      "$comment": "more a_section information elements follow"
+    }, 
+    
+    "i_section": {
+      "$id": "#/properties/i_section",
+      "title": "Images information section",
+      "type": "array",
+      "imagelinks": [
+        <object of type array for links to images> ],
+      "$comment": "more i_section information elements follow"
+    }, 
+    
+    "s_section": {
+      "$id": "#/properties/s_section",
+      "title": "Supplementary information section",
+      "type": "array",
+      "externallinks": {
+        <object of type array for links> },
+      "$comment": "insert more s_section objects/variables here",
+    },  
+    
+    "t_section": {
+      "$id": "#/properties/t_section",
+      "title": "Tertiary information section",
+      "type": "array",
+      "externallinks": {
+        <object of type array for links> },
+      "$comment": "insert more t_section objects/variables here",
+    }
+}
