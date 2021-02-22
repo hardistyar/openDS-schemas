@@ -289,6 +289,11 @@ Definitions of individual information elements belonging to the supplementary s_
 }
 
 ```
+Note, deployed (adapted) into nsidr.org as schema ODStype1802 on 18th February 2021.
+
+Institution array is open-ended, allowing as many items as you like to be added. In CORDRA How do I allow additional referents to be added as format=uri rather than just as uncontrolled strings? Within an array, is it possible in the schema to constrain the number of elements and their order?
+
+Material Type is not specified yet. At the moment in CORDRA, just a string type.
 
 
 ## Example DS coded according to schema
