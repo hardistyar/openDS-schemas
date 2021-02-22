@@ -3,28 +3,83 @@
 ---
 
 ## Introduction
-This page explains the overall structure of the [JSON schema](https://json-schema.org/) for an [open Digital Specimen](https://github.com/DiSSCo/openDS).
+Using examples, this page explains the structure of an [open Digital Specimen](https://github.com/DiSSCo/openDS) and declares the [JSON schema](https://json-schema.org/) to support those.
 
+In this form it serves as a basis for discussion and understanding.
 
-## Linking to controlled vocabularies
-*Note, 09Feb: This needs further thought/discussion:*
+Important starting points for understanding are the following:
 
-- *link schema properties to the relevant controlled vocabularies, to make open Digital Specimens machine-readable;*
-- *make the schema compliant with [Schema.org](https://schema.org/) to provide structured data on the Internet that can be discovered by the major search engines and thus ensure that details of open Digital Specimens are returned in search results. Where necessary this includes supplementing with relevant types and properties from the [bioschemas.org](https://bioschemas.org/) extensions to Schema.org;*
-- *also, 9th Feb discovered geoschemas and science-on-schema.org.*
-- *Schema.org has to be implemented on web pages (landing pages) that can be crawled, not in the DS itself.*
-- *What is the concept of a landing page for an open digital specimen? It's basically the UI page on a web server*.
+- The structure of an openDS corresponds to the Minimum Information about a Digital Specimen (MIDS), level by level.
+- The definition of an openDS here corresponds to the Digital Specimen class in the [object model](https://github.com/DiSSCo/openDS/blob/master/data-model/data-model-intro.md).
+
+## Making a DS semantically meanful - context definition
+In a first phase, while we aim to stabilise the structure, we consider only the JSON representation of the DS. Later, to make the DS machine-readable we will extend this to a JSON-LD representation that links the key names to terms in relevant vocabularies. In doing so, there are some open questions:
+
+- Is it the DS itself that must be expressed as JSON-LD or its schema?
+- Do we need compliance with [Schema.org](https://schema.org/) and relevant types and properties from the [bioschemas.org](https://bioschemas.org/) extensions to provide structured data on the Internet that can be discovered by the major search engines? Does this have to be in the DS itself, it's schema (see above question) or just the HTML landing pages on the Web where the specimens can be seen by humans?
+- Other schemas we may need to take into account include  [geoschemas.org](https://geoschemas.org/about) and [science-on-schema.org](https://github.com/ESIPFed/science-on-schema.org).
 - *At the bottom of all this is whether we consider an ODS to be of resourceType Dataset from the Schema.org perspective. If not, then do we need to do it? In a sense, an ODS is a dataset because we describe it as an authoritative package of links to other data. It is self-contained, and describable.*
 
+In any case, and for when we might need it here's the beginnings of a [context definition](context-definition.md).
 
-## Context definition
+## Example 1: MIDS level 1, authoritative information only
+An example DS for a physical specimen in the collection of the Muséum National d'Histoire Naturelle, Paris (MNHN) with the identifier "MNHN-IM-2013-8488"; compliant with MIDS level 1 and having no images or supplementary information.
 
-Here, for all schemas: [context definition](context-definition.md).
+Source: https://science.mnhn.fr/institution/mnhn/collection/im/item/2013-8488
 
-## Beginning of the schema
-This part of the definition defines the schema itself. It specifies what is being defined i.e., an object type with the title "OpenDigitalSpecimen" and a set of properties - that will be defined below - making up the definition of an open digital specimen.
+Location of DS: https://nsidr.org/objects/20.5000.1025/64ae0cf0dacb7bd20ba5?pretty
 
-*Notes to self about the fragment below:*
+```json
+{
+  "id": "20.5000.1025/64ae0cf0dacb7bd20ba5",
+  "typeName": "ODStype1802",
+  "authoritative": {
+    "modified": "2021-02-22T14:10:20.824Z",
+    "midsLevel": 1,
+    "physicalSpecimenId": "MNHN-IM-2013-8488",
+    "institution": [
+      "MNHN",
+      "https://ror.org/03wkt5x30"
+    ],
+    "materialType": "Alcohol, 95%",
+    "name": "Pygmaepterys pointieri Garrigues & Merle, 2014"
+  }
+}
+```
+
+## Structure of the schema for the above example
+The JSON schema for the above example begins with the definition of the schema itself - the first five lines of the JSON fragment below. It states the version of the [JSON schema specification](https://json-schema.org/) that applies and gives an identifier, description, type and title to the schema.
+
+The schema then specifies in its properties what is being defined i.e., an object of type "ODStype1802" with its included subsets of specimen related properties. The first subset of specimen related properties - the authoritative properties - appear next. At the end of the authoritative (a_section) a list of those property keys that are mandatory appears as the `required` validation array. The object's  `id`, `typeName` and `authoritative` section are all required for an open Digital Specimen to be a valid construct. The object's `id` must be a valid Handle.
+
+```json
+{
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
+  "$id": "https://nsidr.org/schemas/opendsschema.json",
+  "description": "v0.4, 22 February 2021. JSON schema for an open Digital Specimen.",
+  "type": "object",
+  "title": "ODStype1802",
+  "properties": {
+    "id": { "type": "string" },
+    "typeName": { "type": "string", "enum": [ "ODStype1802" ] },
+    "authoritative": {
+      "$id": "#/properties/a_section",
+      "type": "object",
+      "properties": {
+        "$comment": "authoritative properties here; list mandatory ones as required (below)"
+      },
+      "required": [ ]  
+    },
+    "$comment": " ... several more optional sections of the schema appear here, see below ... "
+  },
+  "required": [ "id", "typeName", "authoritative" ]
+}
+```
+
+
+*Notes to self about the fragment above:*
+
+- *We need to constrain the `id` to be a valid Handle. How to do that?*
 - *do we need to pull in the $context here? Unresolved issue as to how we exploit links to semantics*
 - *the deployed schema at http://nsidr.org/objects/20.5000.1025/abdc0e4c69d372a68cec, which is eventually the one that will be pointed to by the `$id` uri does not match what is written here. That out-dated one (v0.2) needs to be replaced at some moment with this one. The `id` will need to be changed to that URL eventually, or maybe to the type definition in a type registry, more likely?*
 - *it may well be that the json description of the ***type definition*** of an openDS is different from this schema definition. Logically they will be the same but how they are used is different.*
@@ -33,103 +88,84 @@ This part of the definition defines the schema itself. It specifies what is bein
 - *Consider that we might want to enforce a convention (pattern) for any specific propertyNames that are not already in the schema but which might be added to a JSON instance.*
 - *Consider that we might want to use the additionalProperties keyword to control how the extensions (E) section works.*
 
+## Overall structure (sections of the schema)
+At the highest level of structure, the properties of an open Digital Specimen are divided into several sections, each represented in the schema as a nested JSON object. The first of these, the authoritative or a_section has already been introduced above. It together with the other section types are explained as follows:
+
+- **authoritative a_section**, contains essential data about a specimen. The a_section is represented by an a_section object containing all the key/value pair properties that are deemed to be authoritative information about a physical specimen. The complete schema definition of the A section corresponds to the information elements expected to be present at MIDS level 2. The A section is mandatory.
+
+- **images i_section**, containing references to images or images themselves of the specimen and/or its labels. The images section is represented by an i_section object containing metadata about the available images.
+
+- **supplementary s_section**, containing links to supplementary data derived from a specimen. The supplementary section is represented by an s_section object, which itself may contain multiple objects grouping specific kinds of supplementary information (such as external links) together. The definition of the s_section corresponds to the additional information elements expected to be present at MIDS level 3 and more.
+
+- **tertiary t_section**, containing links to related data associated with a specimen but not directly derived from the physical specimen.
+  
+Expanding the basic schema construct introduced above, the JSON schema fragment describing this overall structure is the following:
+
 ```json
 {
   "$schema": "http://json-schema.org/draft/2019-09/schema#",
   "$id": "https://nsidr.org/schemas/opendsschema.json",
+  "description": "v0.4, 22 February 2021. JSON schema for an open Digital Specimen.",
   "type": "object",
-  "description": "v0.3, 11Feb2021. JSON schema for an open Digital Specimen.",
-  "title": "OpenDigitalSpecimen",
+  "title": "ODStype1802",
   "properties": {
-    "id": { "type": "string", "$comment": "doi name" },
-    "title": { "type": "string", "enum": ["openDigitalSpecimen"] },
-    ... several nested sections of the schema, see below ... ,
-  },
-  "required": [ "id", "title", "a_section" ]
-}
-```
-As the fragment indicates, an `id` - a registered DOI name - is needed to identify the object and a`title` is needed to make it explicit that this is an ODS object. The Authoritative information (A) section is mandatory as well.
-
-The remainder of the schema is organised as a structure of nested schemea sections, as specified below.
-
-## Overall structure (nested sections of the schema)
-At the highest level of structure, the properties of an open Digital Specimen are divided into several sections, each represented in the schema as a nested JSON object, as follows:
-
-- **Authoritative (A) section**, containing essential data about a specimen. The A section is represented by an a_section object containing all the key/value pair properties that are deemed to be authoritative information about a physical specimen. The complete schema definition of the A section corresponds to the information elements expected to be present at MIDS level 2. The A section is mandatory.
-
-- **Images (I) section**, containing references to images or images themselves of the specimen and/or its labels. The I section is represented by an i_section object containing metadata about the available images.
-
-- **Supplementary (S) section**, containing links to supplementary data derived from a specimen. The S section is represented by an s_section object, which itself may contain multiple objects grouping specific kinds of supplementary information (such as external links) together. The definition of the S section corresponds to the additional information elements expected to be present at MIDS level 3 and more.
-
-- **Tertiary (T) section**, containing links to related data associated with a specimen but not directly dervied from the physical specimen.
-  
-The json schema fragment describing this overall structure is the following:
-
-```json
-
-  / ... beginning of the schema, see above ... ],
-
-    "a_section": {
+    "id": { "type": "string" },
+    "typeName": { "type": "string", "enum": [ "ODStype1802" ] },
+    "authoritative": {
       "$id": "#/properties/a_section",
       "type": "object",
       "properties": {
-        "section": { "type": "string", "enum": ["authoritative information"] },
-        <a_section name/value pairs>,
-      },  
-      "required": [ "section", <other mandatory keys> ]
+        "$comment": "authoritative properties here; list mandatory ones as required (below)"
+      },
+      "required": [ ]  
     },
-
->>>the rest below need fixing up.
-
-    "i_section": {
+    "images": {
       "$id": "#/properties/i_section",
-      "type": "object",      
-      "title": "images information",
-      "type": "array",
-      "imagelinks": [
-        <object of type array for links to images> ],
-      "$comment": "more i_section information elements follow",
-      "required": [ <list any mandatory keys> ]
-    }, 
-    
-    "s_section": {
+      "type": "object",
+      "properties": {
+        "$comment": "image properties here; list mandatory ones as required (below)"
+      },  
+      "required": [  ]
+    },
+    "supplementary": {
       "$id": "#/properties/s_section",
       "type": "object",
-      "title": "supplementary information",
-      "type": "array",
-      "externallinks": {
-        <object of type array for links> },
-      "$comment": "insert more s_section objects/variables here",
-      "required": [ <list any mandatory keys> ]
-    },  
-    
-    "t_section": {
+      "properties": {
+        "$comment": "supplementary properties here; list mandatory ones as required (below)"
+      },  
+      "required": [  ]
+    },
+    "tertiary": {
       "$id": "#/properties/t_section",
       "type": "object",
-      "title": "tertiary information",
-      "type": "array",
-      "externallinks": {
-        <object of type array for links> },
-      "$comment": "insert more t_section objects/variables here",
-      "required": [ <list any mandatory keys> ]
-    }
-
-    … <other similar section definitions, if needed e.g., Proprietary extension (E) section> …
-  }
-
+      "properties": {
+        "$comment": "tertiary properties here; list mandatory ones as required (below)"
+      },  
+      "required": [  ]
+    },
+    "$comment": " ... further optional sections of the schema can appear here ... "
+  },
+  "required": [ "id", "typeName", "authoritative" ]
+}
 ```
+
+### Other section types
+*For further study.*
 
 There are several additional section types for further study, including:
 
-- **Extension (E) section**, *for further study. This is likely to be proprietary to specific organisations/systems.*
+- **extension e_section**, *for further study. This is likely to be proprietary to specific organisations/systems.*
 
-- **Operations/methods (O) section**, *for further study.*
+- **operations/methods o_section**, *for further study.*
   
-- **Content/payload (C) section**, *for further study.*
+- **content/payload c_section**, *for further study.*
   
 - ***Others ...***
 
 ## Authoritative a_section information elements
+
+>>>>Clean up here
+
 Definitions of individual information elements belonging to the authoritative a_section follow. Each definition is a key/value pair.
 
 Together with `id` and `title` (above) only a very small number of information elements are mandatory for an open digital specimen to come into existence (i.e., to be created). The first of these is `midsLevel`, which is a declared or calculated value of the present MIDS Level reached by the available  specimen data. Also required are the information elements `modified`, `physicalSpecimenId` and `institution`. These correspond to the information elements required at [MIDS level 0](https://github.com/tdwg/mids/issues?q=is%3Aopen+is%3Aissue+label%3AMIDS-0+label%3A%22MIDS+Element%22) according to the [TDWG MIDS definition](https://github.com/tdwg/mids/blob/main/MIDS-definition.md).
@@ -194,7 +230,7 @@ Here is the complete JSON fragment for the a_section property definitions above.
       "$id": "#/properties/a_section",
       "type": "object",
       "properties": {
-        "section": { "type": "string", "enum": ["authoritative information"] },
+        "section": { "type": "string", "enum": ["authoritative"] },
         "modified": { "type": "string", "title": "Modified (date:time)" },
         "midsLevel": { "type": "integer", "minimum": 0, "maximum": 3 },
         "physicalSpecimenId": { "type": "string", "title": "Physical specimen identifier" },
@@ -208,6 +244,7 @@ Here is the complete JSON fragment for the a_section property definitions above.
       "required": [ "section", "modified", "midsLevel", "physicalSpecimenId", "institution" ]
     }
 ```
+
 ## Conditional subschemas for different values of midsLevel
 - *Consider that, depending on the declared MIDS level, we'd expect to see a certain set of properties present in the ODS. See 'applying subschemas conditionally, using IfThenElse constructs. Need also to look at subschemas and how to structure these as separate schema fragments / type definitions i.e., the type definition of an ODS a_section is different depending on the declared/calculated MIDSLevel.*
 
@@ -218,7 +255,7 @@ Here is the complete JSON fragment for the a_section property definitions above.
       "$id": "#/properties/a_section",
       "type": "object",
       "properties": {
-        "section": { "type": "string", "enum": ["authoritative information"] },
+        "section": { "type": "string", "enum": ["authoritative"] },
         "modified": { "type": "string", "title": "Modified (date:time)" },
         "midsLevel": { "type": "integer", "minimum": 0, "maximum": 3 },
       },
@@ -253,6 +290,39 @@ Definitions of individual information elements belonging to the supplementary s_
 
 *To be completed.*
 
+## S section
+>>>what do we need from below?
+
+    "s_section": {
+      "$id": "#/properties/s_section",
+      "type": "object",
+      "title": "supplementary information",
+      "type": "array",
+      "externallinks": {
+        <object of type array for links> },
+      "$comment": "insert more s_section objects/variables here",
+      "required": [ <list any mandatory keys> ]
+    },  
+    
+    "t_section": {
+      "$id": "#/properties/t_section",
+      "type": "object",
+      "title": "tertiary information",
+      "type": "array",
+      "externallinks": {
+        <object of type array for links> },
+      "$comment": "insert more t_section objects/variables here",
+      "required": [ <list any mandatory keys> ]
+    }
+
+    … <other similar section definitions, if needed e.g., Proprietary extension (E) section> …
+  }
+
+
+
+
+
+
 
 
 ## Complete JSON schema for validation testing
@@ -261,34 +331,37 @@ Definitions of individual information elements belonging to the supplementary s_
 {
   "$schema": "http://json-schema.org/draft/2019-09/schema#",
   "$id": "https://nsidr.org/schemas/opendsschema.json",
-  "description": "v0.3, 11Feb2021. JSON schema for an open Digital Specimen.",
+  "description": "v0.4, 22 February 2021. JSON schema for an open Digital Specimen.",
   "type": "object",
-  "title": "openDigitalSpecimen",
+  "title": "ODStype1802",
   "properties": {
-    "id": { "type": "string", "$comment": "doi name" },
+    "id": { "type": "string" },
     "title": { "type": "string", "enum": ["openDigitalSpecimen"] },
-    "a_section": {
+    "typeName": { "type": "string", "enum": [ "ODStype1802" ] },
+    "authoritative": {
       "$id": "#/properties/a_section",
       "type": "object",
       "properties": {
-        "section": { "type": "string", "enum": ["authoritative information"] },
         "modified": { "type": "string", "title": "Modified (date:time)" },
         "midsLevel": { "type": "integer", "minimum": 0, "maximum": 3 },
         "physicalSpecimenId": { "type": "string", "title": "Physical specimen identifier" },
         "institution": {
           "type": "array", "items": [ {"type": "string", "title": "Code (GRSciColl)" },
-                                      {"type": "string", "title": "Referent" } ] 
+                                      {"type": "string", "format": "uri", "title": "Referent" } ] 
         },
-        "materialType": {},
+        "materialType": { "type": "string", "title": "Material type" },
         "name": { "type": "string", "maxLength": 128, "title": "Name" }
       },  
-      "required": [ "section", "modified", "midsLevel", "physicalSpecimenId", "institution" ]
+      "required": [ "modified", "midsLevel", "physicalSpecimenId", "institution" ]
     }
   },
-  "required": [ "id", "title", "a_section" ]
+  "required": [ "id", "title", "authoritative" ]
 }
-
 ```
+
+
+
+
 Note, deployed (adapted) into nsidr.org as schema ODStype1802 on 18th February 2021.
 
 Institution array is open-ended, allowing as many items as you like to be added. In CORDRA How do I allow additional referents to be added as format=uri rather than just as uncontrolled strings? Within an array, is it possible in the schema to constrain the number of elements and their order?
@@ -299,22 +372,28 @@ Material Type is not specified yet. At the moment in CORDRA, just a string type.
 ## Example DS coded according to schema
 This is an example DS coded according to the above schema definition.
 
-```
+https://nsidr.org/objects/20.5000.1025/ec22a205603a9f2b72e6?pretty:
+
+```json
 {
-  "id": "20.5000.1025/123456",
-  "title": "openDigitalSpecimen",
-  "a_section": {
-    "section": "authoritative information",
-    "modified": "2021-02-09T16:40:18Z",
+  "id": "20.5000.1025/ec22a205603a9f2b72e6",
+  "typeName": "ODStype1802",
+  "a_section(authoritative)": {
+    "modified": "2021-02-18T14:34:43.639Z",
     "midsLevel": 1,
-    "physicalSpecimenId": "013258549",
-    "institution": ["NHMUK", "https://ror.org/039zvsn29" ],
-    "materialType": "",
+    "physicalSpecimenId": "2006.12.6.40-41",
+    "institution": [
+      "NHMUK",
+      "https://ror.org/039zvsn29",
+      "https://grid.ac/institutes/grid.35937.3b"
+    ],
+    "materialType": "Unspecified",
     "name": "Holorchis castex"
   }
 }
-
 ```
+
+
 
 ## Adapt the above Complete JSON schema so that it's of type array
 *I need to investigate whether the overall type should be object or array.*
@@ -362,3 +441,6 @@ This is an example DS coded according to the above schema definition.
 
 
 END.
+
+
+
