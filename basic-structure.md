@@ -52,6 +52,8 @@ The JSON schema for the above example begins with the definition of the schema i
 
 The schema then specifies in its properties what is being defined i.e., an object of type "ODStype1802" with its included subsets of specimen related properties. The first subset of specimen related properties - the authoritative properties - appear next. At the end of the authoritative (a_section) a list of those property keys that are mandatory appears as the `required` validation array. The object's  `id`, `typeName` and `authoritative` section are all required for an open Digital Specimen to be a valid construct. The object's `id` must be a valid Handle.
 
+*Note to self: Constrain the allowed values of `id` to the permitted pattern of a Handle. Uses the `pattern` validation keyword with (ECMAScript (ECMA-262)](http://json-schema.org/understanding-json-schema/reference/regular_expressions.html) regular expression dialect to specify the pattern.*
+
 ```json
 {
   "$schema": "http://json-schema.org/draft/2019-09/schema#",
@@ -61,7 +63,7 @@ The schema then specifies in its properties what is being defined i.e., an objec
   "title": "ODStype1802",
   "properties": {
     "id": { "type": "string" },
-    "typeName": { "type": "string", "enum": [ "ODStype1802" ] },
+    "typeName": { "type": "string", "const": [ "ODStype1802" ] },
     "authoritative": {
       "$id": "#/properties/a_section",
       "type": "object",
@@ -110,7 +112,7 @@ Expanding the basic schema construct introduced above, the JSON schema fragment 
   "title": "ODStype1802",
   "properties": {
     "id": { "type": "string" },
-    "typeName": { "type": "string", "enum": [ "ODStype1802" ] },
+    "typeName": { "type": "string", "const": [ "ODStype1802" ] },
     "authoritative": {
       "$id": "#/properties/a_section",
       "type": "object",
@@ -226,22 +228,21 @@ Context:
 Here is the complete JSON fragment for the a_section property definitions above.
 
 ```json
-    "a_section": {
+    "authoritative": {
       "$id": "#/properties/a_section",
       "type": "object",
       "properties": {
-        "section": { "type": "string", "enum": ["authoritative"] },
-        "modified": { "type": "string", "title": "Modified (date:time)" },
+        "modified": { "type": "string", "title": "Modified (date:time)", "format": "date-time" },
         "midsLevel": { "type": "integer", "minimum": 0, "maximum": 3 },
         "physicalSpecimenId": { "type": "string", "title": "Physical specimen identifier" },
         "institution": {
           "type": "array", "items": [ {"type": "string", "title": "Code (GRSciColl)" },
-                                      {"type": "string", "title": "Referent" } ] 
+                                      {"type": "string", "format": "uri", "title": "Referent" } ] 
         },
-        "materialType": {},
+        "materialType": { "type": "string", "title": "Material type" },
         "name": { "type": "string", "maxLength": 128, "title": "Name" }
       },  
-      "required": [ "section", "modified", "midsLevel", "physicalSpecimenId", "institution" ]
+      "required": [ "modified", "midsLevel", "physicalSpecimenId", "institution", "materialType", "name" ]
     }
 ```
 
@@ -250,13 +251,14 @@ Here is the complete JSON fragment for the a_section property definitions above.
 
 *Something along the lines of (which still needs to be checked and tested and optimised):*
 
+>>>Needs cleaning up still to align with other parts
+
 ```json
-    "a_section": {
+    "authoritative": {
       "$id": "#/properties/a_section",
       "type": "object",
       "properties": {
-        "section": { "type": "string", "enum": ["authoritative"] },
-        "modified": { "type": "string", "title": "Modified (date:time)" },
+        "modified": { "type": "string", "title": "Modified (date:time)", "format": "date-time" },
         "midsLevel": { "type": "integer", "minimum": 0, "maximum": 3 },
       },
       "if": { "properties": { "midsLevel": { "const": 1 } },
@@ -328,6 +330,9 @@ Definitions of individual information elements belonging to the supplementary s_
 ## Complete JSON schema for validation testing
 
 ```json
+
+update this >>>>
+
 {
   "$schema": "http://json-schema.org/draft/2019-09/schema#",
   "$id": "https://nsidr.org/schemas/opendsschema.json",
@@ -336,13 +341,12 @@ Definitions of individual information elements belonging to the supplementary s_
   "title": "ODStype1802",
   "properties": {
     "id": { "type": "string" },
-    "title": { "type": "string", "enum": ["openDigitalSpecimen"] },
-    "typeName": { "type": "string", "enum": [ "ODStype1802" ] },
+    "typeName": { "type": "string", "const": [ "ODStype1802" ] },
     "authoritative": {
       "$id": "#/properties/a_section",
       "type": "object",
       "properties": {
-        "modified": { "type": "string", "title": "Modified (date:time)" },
+        "modified": { "type": "string", "title": "Modified (date:time)", "format": "date-time" },
         "midsLevel": { "type": "integer", "minimum": 0, "maximum": 3 },
         "physicalSpecimenId": { "type": "string", "title": "Physical specimen identifier" },
         "institution": {
@@ -352,7 +356,7 @@ Definitions of individual information elements belonging to the supplementary s_
         "materialType": { "type": "string", "title": "Material type" },
         "name": { "type": "string", "maxLength": 128, "title": "Name" }
       },  
-      "required": [ "modified", "midsLevel", "physicalSpecimenId", "institution" ]
+      "required": [ "modified", "midsLevel", "physicalSpecimenId", "institution", "materialType", "name" ]
     }
   },
   "required": [ "id", "title", "authoritative" ]
@@ -368,75 +372,6 @@ Institution array is open-ended, allowing as many items as you like to be added.
 
 Material Type is not specified yet. At the moment in CORDRA, just a string type.
 
-
-## Example DS coded according to schema
-This is an example DS coded according to the above schema definition.
-
-https://nsidr.org/objects/20.5000.1025/ec22a205603a9f2b72e6?pretty:
-
-```json
-{
-  "id": "20.5000.1025/ec22a205603a9f2b72e6",
-  "typeName": "ODStype1802",
-  "a_section(authoritative)": {
-    "modified": "2021-02-18T14:34:43.639Z",
-    "midsLevel": 1,
-    "physicalSpecimenId": "2006.12.6.40-41",
-    "institution": [
-      "NHMUK",
-      "https://ror.org/039zvsn29",
-      "https://grid.ac/institutes/grid.35937.3b"
-    ],
-    "materialType": "Unspecified",
-    "name": "Holorchis castex"
-  }
-}
-```
-
-
-
-## Adapt the above Complete JSON schema so that it's of type array
-*I need to investigate whether the overall type should be object or array.*
-*What would be the reasons for using an array rather than an object type at the top-level?*
-*One possible reason to put sections into an array might be to force the order in which they appear.*
-
-```json
-
-{
-  "$schema": "http://json-schema.org/draft/2019-09/schema#",
-  "$id": "https://nsidr.org/schemas/opendsschema.json",
-  "description": "v0.3, 11Feb2021. JSON schema for an open Digital Specimen.",
-  "type": "object",
-  "title": "openDigitalSpecimen",
-  "properties": {
-    "id": { "type": "string", "$comment": "doi name" },
-    "title": { "type": "string", "enum": ["openDigitalSpecimen"] },
-    "sections": { "type": "array",
-                  "items": [{
-                              "a_section": {
-                                "$id": "#/properties/a_section",
-                                "type": "object",
-                                "properties": {
-
-                                }
-                              }
-                            },
-                            {
-                              "b_section": {
-                                "$id": "#/properties/b_section",
-                                "type": "object",
-                                "properties": {
-
-                              }
-                            }
-                           }]  
-    }
-  },
-  "required": [ "section", "modified", "midsLevel", "physicalSpecimenId", "institution" ]
-    }
-  },
-  "required": [ "id", "title" ]
-}
 
 
 
