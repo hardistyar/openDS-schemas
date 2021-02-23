@@ -22,7 +22,7 @@ This [`geographic-coordinate` example](https://dtr-test.pidconsortium.eu/#object
 
 We can image a top-level PIT that is the complete type definition of a DS. This can be built from several 'section PITs' corresponding to the overall structure i.e., one PIT per section type - a_section, i_section, s_section, etc. These section PITs can themselves be built from combinations of other PITs, such as the `geographic-coordinate` example given and Basic PITs.
 
-Taking this approach allows the structure of an openDS to remain flexible and adaptive to new needs. PITs can evolve independently of one another and fragments of data corresponding to PITs, especially the section PITs can be process separately and independently of one another, as applications needs dictate.
+Taking this approach allows the structure of an openDS to remain flexible and adaptive to new needs. PITs can evolve independently of one another and fragments of data corresponding to PITs, especially the section PITs can be processed separately and independently of one another, as needs of applications dictate.
 
 This approach also corresponds well with the overall approach of the [openDS data model](https://github.com/DiSSCo/openDS/blob/master/data-model/data-model-intro.md) with PITs corresponding to objects and properties. Thus, for example the GeographicOrigin object class could have `geographic-coordinate` as one of its properties.
 
@@ -46,7 +46,8 @@ We take the simple first example DS object outlined in the [basic-structure](bas
   }
 }
 ```
-From this example, we can see that we need to define Basic PITs corresponding to each of the atomic information elements we expect to see in a DS at MIDS level 1 i.e., `modified`, `midsLevel`, `physicalSpecimenId`, `institution`, `materialType` and `name`. These are mostly straightforward Basic PITs, each have a single property - with the exception of `institution`, which needs two properties.
+## Basic PITs
+From the example, we can see that we need to define Basic PITs corresponding to each of the atomic information elements we expect to see in a DS at MIDS level 1 i.e., `modified`, `midsLevel`, `physicalSpecimenId`, `institution`, `materialType` and `name`. These are mostly straightforward Basic PITs, each have a single property - with the exception of `institution`, which needs two properties.
 
 | Basic PIT (type name) | Identifier |
 | --- | --- |
@@ -57,14 +58,15 @@ From this example, we can see that we need to define Basic PITs corresponding to
 | `materialType` |  |
 | `name` |  |
 
-Then we need a PIT defining the a_section, made up from these Basic PITs and a PIT defining the open DS as a whole (but at this moment only comprising the header information and the a_section PIT). In the table below, this PIT for the whole DS has the type name `ODStype1803`.
+## (Compound) PITs
+Then we need a PIT defining the a_section, made up from these Basic PITs. We also need a PIT defining the open DS as a whole (but at this moment only comprising the header information and the a_section PIT). In the table below, this PIT for the whole DS has the type name `ODStype1803`.
 
 | PIT (type name) | Identifier |
 | --- | --- |
 | `a_section` | <a href="https://hdl.handle.net/21.T11148/10d897b59e4da36ec0ad?locatt=view:ui" target="_blank">21.T11148/10d897b59e4da36ec0ad</a> |
 | `ODStype1803` | <a href="https://hdl.handle.net/21.T11148/627a5b7620b1471aa945?locatt=view:ui" target="_blank">21.T11148/627a5b7620b1471aa945</a> |
 
-
+That's as far as I've got so far.
 
 
 
