@@ -25,7 +25,7 @@ In any case, and for when we might need it here's the beginnings of a [context d
 ## Example 1: MIDS level 1, authoritative information only
 An example DS for a physical specimen in the collection of the Muséum National d'Histoire Naturelle, Paris (MNHN) with the identifier "MNHN-IM-2013-8488"; compliant with MIDS level 1 and having no images or supplementary information.
 
-Source: https://science.mnhn.fr/institution/mnhn/collection/im/item/2013-8488
+Source of data: https://science.mnhn.fr/institution/mnhn/collection/im/item/2013-8488
 
 Location of DS: https://nsidr.org/objects/20.5000.1025/64ae0cf0dacb7bd20ba5?pretty
 
@@ -50,7 +50,7 @@ Location of DS: https://nsidr.org/objects/20.5000.1025/64ae0cf0dacb7bd20ba5?pret
 ## Structure of the schema for the above example
 The JSON schema for the above example begins with the definition of the schema itself - the first five lines of the JSON fragment below. It states the version of the [JSON schema specification](https://json-schema.org/) that applies and gives an identifier, description, type and title to the schema.
 
-The schema then specifies in its properties what is being defined i.e., an object of type "ODStype1802" with its included subsets of specimen related properties. The first subset of specimen related properties - the authoritative properties - appear next. At the end of the authoritative (a_section) a list of those property keys that are mandatory appears as the `required` validation array. The object's  `id`, `typeName` and `authoritative` section are all required for an open Digital Specimen to be a valid construct. The object's `id` must be a valid Handle.
+The schema then specifies in its properties what is being defined i.e., an object of type "ODStype1802" with its included subsets of specimen related properties. The first subset of specimen related properties - the authoritative properties - appear next. At the end of the authoritative (a_section) a list of those property keys that are mandatory appears as the `required` validation array. It's empty in the fragment below. The object's  `id`, `typeName` and `authoritative` section are all required for an open Digital Specimen to be a valid construct. The object's `id` must be a valid Handle.
 
 *Note to self: Constrain the allowed values of `id` to the permitted pattern of a Handle. Uses the `pattern` validation keyword with (ECMAScript (ECMA-262)](http://json-schema.org/understanding-json-schema/reference/regular_expressions.html) regular expression dialect to specify the pattern.*
 
@@ -93,7 +93,7 @@ The schema then specifies in its properties what is being defined i.e., an objec
 ## Overall structure (sections of the schema)
 At the highest level of structure, the properties of an open Digital Specimen are divided into several sections, each represented in the schema as a nested JSON object. The first of these, the authoritative or a_section has already been introduced above. It together with the other section types are explained as follows:
 
-- **authoritative a_section**, contains essential data about a specimen. The a_section is represented by an a_section object containing all the key/value pair properties that are deemed to be authoritative information about a physical specimen. The complete schema definition of the A section corresponds to the information elements expected to be present at MIDS level 2. The A section is mandatory.
+- **authoritative a_section**, contains essential data about a specimen. The a_section is represented by an a_section object containing all the key/value pair properties that are deemed to be authoritative information about a physical specimen. The complete schema definition of the a_section corresponds to the information elements expected to be present at MIDS level 2. The a_section is mandatory.
 
 - **images i_section**, containing references to images or images themselves of the specimen and/or its labels. The images section is represented by an i_section object containing metadata about the available images.
 
@@ -160,7 +160,7 @@ There are several additional section types for further study, including:
 
 - **operations/methods o_section**, *for further study.*
   
-- **content/payload c_section**, *for further study.*
+- **payloads (contents) p_section**, *for further study.* *thumbnail images perhaps?*
   
 - ***Others ...***
 
