@@ -49,22 +49,23 @@ We take the simple first example DS object outlined in the [basic-structure](bas
 ## Basic PITs
 From the example, we can see that we need to define Basic PITs corresponding to each of the atomic information elements we expect to see in a DS at MIDS level 1 i.e., `modified`, `midsLevel`, `physicalSpecimenId`, `institution`, `materialType` and `name`. These are mostly straightforward Basic PITs, each have a single property - with the exception of `institution`, which needs two properties.
 
-| Basic PIT (type name) | Identifier |
+| **Basic PIT (type name)** | **Identifier** |
 | --- | --- |
 | `modified` | <a href="https://hdl.handle.net/21.T11148/99db324742823c55d975?locatt=view:ui" target="_blank">21.T11148/99db324742823c55d975</a> |
-| `midsLevel` |  |
+| `midsLevel` | <a href="https://hdl.handle.net/21.T11148/05d74b79e4d5139afe23?locatt=view:ui" target="_blank">21.T11148/05d74b79e4d5139afe23</a> |
 | `physicalSpecimenId` | <a href="https://hdl.handle.net/21.T11148/4ac7431c2616a213481e?locatt=view:ui" target="_blank">21.T11148/4ac7431c2616a213481e</a> |
-| `institution` |  |
-| `materialType` |  |
-| `name` |  |
+| `institution` | <a href="https://hdl.handle.net/21.T11148/197d0d589583abf80bc0?locatt=view:ui" target="_blank">21.T11148/197d0d589583abf80bc0</a> |
+| `materialType` | <a href="https://hdl.handle.net/21.T11148/e99cf30f33c4a6397352?locatt=view:ui" target="_blank">21.T11148/e99cf30f33c4a6397352</a> |
+| `name` | <a href="https://hdl.handle.net/21.T11148/6ae999552a0d2dca14d6?locatt=view:ui" target="_blank">21.T11148/6ae999552a0d2dca14d6</a> |
 
 ## (Compound) PITs
-Then we need a PIT defining the a_section, made up from these Basic PITs. We also need a PIT defining the open DS as a whole (but at this moment only comprising the header information and the a_section PIT). In the table below, this PIT for the whole DS has the type name `ODStype1803`.
+Then we need a PIT defining the a_section, made up from these Basic PITs. We also need a PIT defining the open DS as a whole (but at this moment only comprising the header information, the a_section PIT and the i_section PIT). In the table below, this PIT for the whole DS has the type name `ODStype1803`.
 
-| PIT (type name) | Identifier |
-| --- | --- |
-| `a_section` | <a href="https://hdl.handle.net/21.T11148/10d897b59e4da36ec0ad?locatt=view:ui" target="_blank">21.T11148/10d897b59e4da36ec0ad</a> |
-| `ODStype1803` | <a href="https://hdl.handle.net/21.T11148/627a5b7620b1471aa945?locatt=view:ui" target="_blank">21.T11148/627a5b7620b1471aa945</a> |
+| **PIT (type name)** | **Identifier** |  |
+| --- | --- | --- |
+| `a_section` | <a href="https://hdl.handle.net/21.T11148/10d897b59e4da36ec0ad?locatt=view:ui" target="_blank">21.T11148/10d897b59e4da36ec0ad</a> |  |
+| `i_section` | <a href="https://hdl.handle.net/21.T11148/833de75dcd35a82bb240?locatt=view:ui" target="_blank">21.T11148/833de75dcd35a82bb240</a> |  |
+| `ODStype1803` | <a href="https://hdl.handle.net/21.T11148/627a5b7620b1471aa945?locatt=view:ui" target="_blank">21.T11148/627a5b7620b1471aa945</a> | **<< Look at this one and then click through each property to get to the lowest level Basic PITs** |
 
 That's as far as I've got so far.
 
