@@ -69,6 +69,8 @@ Then we need a PIT defining the a_section, made up from these Basic PITs. We als
 
 That's as far as I've got so far.
 
+*One issue that comes up during discussion is the question of whether type definitions should be versioned. Needs to be further investigated.*
+
 
 
 
