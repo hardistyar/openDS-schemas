@@ -84,6 +84,14 @@ At the highest level of structure, the properties of an open Digital Specimen ar
 
 - **images i_section**, containing references to images or images themselves of the specimen and/or its labels. The images section is represented by an i_section object containing metadata about the available images.
 
+
+To do:
+SDR requires a data object for describing labelled regions (ROIs) on an image. IIIF now supports polygon region descriptions, and will be used internally for image data. 
+
+Image section must contain description of regions of interest for each image.
+https://www.loc.gov/standards/alto/ instead of iiif.
+
+
 - **supplementary s_section**, containing links to supplementary data derived from a specimen. The supplementary section is represented by an s_section object, which itself may contain multiple objects grouping specific kinds of supplementary information (such as external links) together. The definition of the s_section corresponds to the additional information elements expected to be present at MIDS level 3 and more.
 
 - **tertiary t_section**, containing links to related data associated with a specimen but not directly derived from the physical specimen.
